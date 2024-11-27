@@ -6,7 +6,16 @@ public class PlayerController : MonoBehaviour
 {
     public Rigidbody2D rb;
     public float speed = 5f; 
-    public LayerMask groundMask;
+
+    LayerMask ground;
+
+    //Jump Variables
+    public float apexHeight;
+    public float apexTime;
+
+    public float gravityScale;
+    float terminalSpeed = 5;
+    public float coyoteTime;
 
     public enum FacingDirection
     {
@@ -17,6 +26,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = this.GetComponent<Rigidbody2D>();
+        ground = LayerMask.GetMask("Ground");
     }
 
     // Update is called once per frame
@@ -26,6 +36,49 @@ public class PlayerController : MonoBehaviour
         //manage the actual movement of the character.
         Vector2 playerInput = new Vector2();
         MovementUpdate(playerInput);
+
+
+
+        //Jump Code
+        if(IsGrounded())
+        {
+            gravityScale = 1;
+            if(Input.GetKey(KeyCode.Space))
+            {
+                //Jump
+                apexTime = Mathf.Sqrt(apexHeight * -2 * (Physics2D.gravity.y * gravityScale));
+            }
+            if(apexTime < 0){
+                //stops you from falling through the world
+                apexTime = 0;
+            }
+        }
+        
+        if(!IsGrounded())
+        {
+            //gravity
+            apexTime += Physics2D.gravity.y * gravityScale * Time.deltaTime;
+
+            //Terminal Speed Stuff
+            if(gravityScale > terminalSpeed){
+                gravityScale = terminalSpeed;
+            }
+
+            gravityScale = gravityScale + 1;
+
+            //Coyote Time
+            if(gravityScale >= 4){
+                if(Input.GetKey(KeyCode.RightArrow)){
+                    transform.position = transform.position + new Vector3(2, 0, 0) * Time.deltaTime;
+                }
+                if(Input.GetKey(KeyCode.LeftArrow)){
+                    transform.position = transform.position + new Vector3(-2, 0, 0) * Time.deltaTime;
+                }
+            }
+        }
+
+        //makes the jump move
+        transform.Translate(new Vector2(0, apexTime) * Time.deltaTime);
     }
 
     private void MovementUpdate(Vector2 playerInput)
@@ -56,10 +109,13 @@ public class PlayerController : MonoBehaviour
     {
         //Is player on the ground?
         //Layers, raycasting, do not use collision sensing(more complicated)
-        bool groundDetect = Physics2D.Raycast(transform.position, transform.up, 1f, groundMask);
-        if(groundDetect == true){
+        Debug.DrawRay(transform.position, Vector2.down * 1, Color.green, 1);
+        bool groundSense = Physics2D.Raycast(transform.position, Vector2.down, 1, ground);
+        if(groundSense == true){
+            Debug.Log("Grounded");
             return true;
-        }else {
+        }else{
+            Debug.Log("Airborne");
             return false;
         }
     }

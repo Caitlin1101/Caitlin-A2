@@ -225,7 +225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 874392358}
   - component: {fileID: 874392359}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1654,7 +1654,7 @@ GameObject:
   - component: {fileID: 1433354313}
   - component: {fileID: 1433354317}
   - component: {fileID: 1433354318}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1696,9 +1696,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
   speed: 0
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 0
+  apexHeight: 15
+  apexTime: 5
+  gravityScale: 2
+  coyoteTime: 0
 --- !u!4 &1433354315
 Transform:
   m_ObjectHideFlags: 0
@@ -1811,7 +1812,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1598075210}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
