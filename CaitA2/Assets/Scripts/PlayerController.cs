@@ -62,6 +62,7 @@ public class PlayerController : MonoBehaviour
                 currentState = CharacterState.jump;
             }
             break;
+
             case CharacterState.walk:
             if(!IsWalking())
             {
@@ -72,6 +73,7 @@ public class PlayerController : MonoBehaviour
                 currentState = CharacterState.jump;
             }
             break;
+
             case CharacterState.jump:
             if(IsGrounded())
             {
@@ -82,15 +84,7 @@ public class PlayerController : MonoBehaviour
                     currentState = CharacterState.idle;
                 }
             }
-            /*if(IsWalking())
-            {
-                currentState = CharacterState.walk;
-            } 
-            if(IsGrounded())
-            {
-                currentState = CharacterState.idle;
-            }
-            */
+    
             break;
             case CharacterState.die:
 
