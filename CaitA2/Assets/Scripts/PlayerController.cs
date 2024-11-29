@@ -9,6 +9,9 @@ public class PlayerController : MonoBehaviour
 
     LayerMask ground;
 
+    //Animation
+    public int currentHealth = 10;
+
     //Jump Variables
     public float apexHeight;
     public float apexTime;
@@ -17,10 +20,18 @@ public class PlayerController : MonoBehaviour
     float terminalSpeed = 5;
     public float coyoteTime;
 
+    //Enums
     public enum FacingDirection
     {
         left, right
     }
+
+    public enum CharacterState
+    {
+        idle, walk, jump, die
+    }
+    public CharacterState currentState = CharacterState.idle;
+    public CharacterState previousState = CharacterState.idle;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +43,63 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Animation stuff starts
+        previousState = currentState;
+
+        if(IsDead())
+        {
+            currentState = CharacterState.die;
+        }
+        switch(currentState)
+        {
+            case CharacterState.idle:
+            if(IsWalking())
+            {
+                currentState = CharacterState.walk;
+            } 
+            if(!IsGrounded())
+            {
+                currentState = CharacterState.jump;
+            }
+            break;
+            case CharacterState.walk:
+            if(!IsWalking())
+            {
+                currentState = CharacterState.idle;
+            } 
+            if(!IsGrounded())
+            {
+                currentState = CharacterState.jump;
+            }
+            break;
+            case CharacterState.jump:
+            if(IsGrounded())
+            {
+                if(IsWalking())
+                {
+                    currentState = CharacterState.walk;
+                } else {
+                    currentState = CharacterState.idle;
+                }
+            }
+            /*if(IsWalking())
+            {
+                currentState = CharacterState.walk;
+            } 
+            if(IsGrounded())
+            {
+                currentState = CharacterState.idle;
+            }
+            */
+            break;
+            case CharacterState.die:
+
+            break;
+        }
+        
+
+        //Animation stuff ends
+
         //The input from the player needs to be determined and then passed in the to the MovementUpdate which should
         //manage the actual movement of the character.
         Vector2 playerInput = new Vector2();
@@ -39,7 +107,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-        //Jump Code
+        //Jump Code starts
         if(IsGrounded())
         {
             gravityScale = 1;
@@ -79,6 +147,8 @@ public class PlayerController : MonoBehaviour
 
         //makes the jump move
         transform.Translate(new Vector2(0, apexTime) * Time.deltaTime);
+
+        //jump code ends
     }
 
     private void MovementUpdate(Vector2 playerInput)
@@ -118,6 +188,11 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Airborne");
             return false;
         }
+    }
+
+    public bool IsDead()
+    {
+        return currentHealth <= 0;
     }
 
     public FacingDirection GetFacingDirection()
