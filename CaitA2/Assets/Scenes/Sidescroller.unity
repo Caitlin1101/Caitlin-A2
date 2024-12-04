@@ -1697,7 +1697,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   speed: 0
   currentHealth: 10
-  apexHeight: 15
+  apexHeight: 5
   apexTime: 5
   gravityScale: 2
   coyoteTime: 0

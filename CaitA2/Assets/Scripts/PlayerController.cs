@@ -9,6 +9,12 @@ public class PlayerController : MonoBehaviour
 
     LayerMask ground;
 
+    //week 12 Variables
+    int runSpeed = 2;
+    float doubleJump;
+    bool jumped = false;
+    LayerMask wall;
+
     //Animation
     public int currentHealth = 10;
 
@@ -38,6 +44,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = this.GetComponent<Rigidbody2D>();
         ground = LayerMask.GetMask("Ground");
+        wall = LayerMask.GetMask("Ground");
     }
 
     // Update is called once per frame
@@ -104,6 +111,7 @@ public class PlayerController : MonoBehaviour
         //Jump Code starts
         if(IsGrounded())
         {
+            jumped = false;
             gravityScale = 1;
             if(Input.GetKey(KeyCode.Space))
             {
@@ -137,23 +145,62 @@ public class PlayerController : MonoBehaviour
                     transform.position = transform.position + new Vector3(-2, 0, 0) * Time.deltaTime;
                 }
             }
+
+            //Double jump code
+            if(jumped == false)
+            {
+                doubleJump = 1;
+            }
+            if(jumped == true)
+            {
+                doubleJump = 0;
+            }
+
+            if(Input.GetKeyDown(KeyCode.Space) && doubleJump == 1)
+            {
+                apexTime = Mathf.Sqrt(apexHeight * -2 * (Physics2D.gravity.y * gravityScale));
+                jumped = true;
+            }
         }
 
         //makes the jump move
         transform.Translate(new Vector2(0, apexTime) * Time.deltaTime);
 
         //jump code ends
+
+
+        //Climbing Code Starts
+
+        if(IsTouchingWall())
+        {
+            if(Input.GetKey(KeyCode.UpArrow))
+            {
+                gravityScale = 0;
+                transform.position = transform.position + new Vector3(0, 2, 0) * Time.deltaTime;
+            }
+        }
+
+        //Climbing Code Ends
     }
 
     private void MovementUpdate(Vector2 playerInput)
     {
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            runSpeed = runSpeed * 2;
+        }
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            runSpeed = 2;
+        }
+
         if(Input.GetKey(KeyCode.RightArrow))
         {
-            transform.position = transform.position + new Vector3(2, 0, 0) * Time.deltaTime;
+            transform.position = transform.position + new Vector3(runSpeed, 0, 0) * Time.deltaTime;
         }
         if(Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.position = transform.position + new Vector3(-2, 0, 0) * Time.deltaTime;
+            transform.position = transform.position + new Vector3(-runSpeed, 0, 0) * Time.deltaTime;
         }
     }
 
@@ -180,6 +227,25 @@ public class PlayerController : MonoBehaviour
             return true;
         }else{
             Debug.Log("Airborne");
+            return false;
+        }
+    }
+
+    public bool IsTouchingWall()
+    {
+        //Draw Vision Lines
+        Debug.DrawRay(transform.position, Vector2.right * 1, Color.red, 1);
+        Debug.DrawRay(transform.position, Vector2.left * 1, Color.red, 1);
+
+        //Sense if touching
+        bool wallSense1 = Physics2D.Raycast(transform.position, Vector2.right, 1, ground);
+        bool wallSense2 = Physics2D.Raycast(transform.position, Vector2.left, 1, ground);
+
+        //result
+        if(wallSense1 == true || wallSense2 == true){
+            Debug.Log("Touching Wall");
+            return true;
+        }else{
             return false;
         }
     }
