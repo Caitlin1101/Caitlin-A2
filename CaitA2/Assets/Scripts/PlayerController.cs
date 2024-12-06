@@ -9,6 +9,12 @@ public class PlayerController : MonoBehaviour
 
     LayerMask ground;
 
+    //Rigidbody Vraiables
+    public float acceleration, deceleration;
+    public float duration = 3;
+    private Vector3 velocity = Vector3.zero; 
+
+
     //week 12 Variables
     int runSpeed = 2;
     float doubleJump;
@@ -36,6 +42,7 @@ public class PlayerController : MonoBehaviour
     {
         idle, walk, jump, die
     }
+
     public CharacterState currentState = CharacterState.idle;
     public CharacterState previousState = CharacterState.idle;
 
@@ -45,6 +52,8 @@ public class PlayerController : MonoBehaviour
         rb = this.GetComponent<Rigidbody2D>();
         ground = LayerMask.GetMask("Ground");
         wall = LayerMask.GetMask("Ground");
+
+        acceleration = speed / duration;
     }
 
     // Update is called once per frame
@@ -100,6 +109,7 @@ public class PlayerController : MonoBehaviour
         
 
         //Animation stuff ends
+
 
         //The input from the player needs to be determined and then passed in the to the MovementUpdate which should
         //manage the actual movement of the character.
