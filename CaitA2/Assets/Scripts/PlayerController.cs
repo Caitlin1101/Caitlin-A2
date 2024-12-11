@@ -9,11 +9,6 @@ public class PlayerController : MonoBehaviour
 
     LayerMask ground;
 
-    //Rigidbody Vraiables
-    public float acceleration, deceleration;
-    public float duration = 3;
-    private Vector3 velocity = Vector3.zero; 
-
 
     //week 12 Variables
     int runSpeed = 2;
@@ -52,8 +47,6 @@ public class PlayerController : MonoBehaviour
         rb = this.GetComponent<Rigidbody2D>();
         ground = LayerMask.GetMask("Ground");
         wall = LayerMask.GetMask("Ground");
-
-        acceleration = speed / duration;
     }
 
     // Update is called once per frame
